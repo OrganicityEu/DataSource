@@ -1,7 +1,10 @@
 package eu.organicity.data.controller;
 
+import com.amaxilatis.orion.model.OrionContextElementWrapper;
 import com.amaxilatis.orion.model.SubscriptionUpdate;
+import eu.organicity.data.service.StorageService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +18,10 @@ import javax.annotation.PostConstruct;
 @RequestMapping(value = {"/api/v1", "/v1"})
 public class ContextController extends BaseController {
 
-    /**
-     * a log4j logger to print messages.
-     */
     protected static final Logger LOGGER = Logger.getLogger(ContextController.class);
+
+    @Autowired
+    StorageService storageService;
 
     @PostConstruct
     public void init() {
@@ -28,14 +31,19 @@ public class ContextController extends BaseController {
      * A method that handles subscription updates from Orion.
      * <p>
      *
-     * @param subscriptionUpdate the {@link SubscriptionUpdate} received from the Orion Context Broker.
+     * @param update the {@link SubscriptionUpdate} received from the Orion Context Broker.
      * @return
      */
     @ResponseBody
     @RequestMapping(value = {"/v1/notifyContext"}, method = RequestMethod.POST, produces = APPLICATION_JSON)
-    SubscriptionUpdate notifyContext(@RequestBody final SubscriptionUpdate subscriptionUpdate, @PathVariable("contextConnectionId") String contextConnectionId) {
-        LOGGER.debug("[call] notifyContext " + subscriptionUpdate.getSubscriptionId());
-        return subscriptionUpdate;
+    SubscriptionUpdate notifyContext(@RequestBody final SubscriptionUpdate update, @PathVariable("contextConnectionId") String contextConnectionId) {
+        LOGGER.debug("[call] notifyContext " + update.getSubscriptionId());
+
+        for (final OrionContextElementWrapper wrapper : update.getContextResponses()) {
+            storageService.storeUpdate(wrapper.getContextElement());
+        }
+
+        return update;
     }
 
 }
