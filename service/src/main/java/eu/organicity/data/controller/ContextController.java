@@ -25,11 +25,8 @@ public class ContextController extends BaseController {
     }
 
     /**
-     * A method that handles subscription updates from Orion or users and starts the data validation against Jubatus.
+     * A method that handles subscription updates from Orion.
      * <p>
-     * TODO : find the attributes of interest.
-     * TODO : find the concerning subscription.
-     * TODO : forward the request to Jubatus using Jubatus Service - should be ASYNC.
      *
      * @param subscriptionUpdate the {@link SubscriptionUpdate} received from the Orion Context Broker.
      * @return
