@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -46,15 +47,19 @@ public class HistoryController extends Deserializers.Base {
     @RequestMapping(value = {"/entities/{entity_id}/readings"}, method = RequestMethod.GET, produces = APPLICATION_JSON)
     public HistoricDataDTO experimentView(@PathVariable("entity_id") final String entityId, @RequestParam(value = "attribute_id") final String attributeId, @RequestParam(value = "from") final String from, @RequestParam(value = "to") final String to, @RequestParam(value = "all_intervals", required = false, defaultValue = "true") final boolean allIntervals, @RequestParam(value = "rollup", required = false, defaultValue = "") final String rollup, @RequestParam(value = "function", required = false, defaultValue = "avg") final String function) {
 
-        HistoricDataDTO data = new HistoricDataDTO();
+        final HistoricDataDTO data = new HistoricDataDTO();
         data.setEntity_id(entityId);
         data.setAttribute_id(attributeId);
+        data.setFrom(from);
+        data.setTo(to);
         data.setReadings(new ArrayList<>());
 
-        List<Measurement> measurements = measurementRepository.findByAssetUrn(entityId);
-
-        for (Measurement measurement : measurements) {
-
+        final List<Measurement> measurements = measurementRepository.findByAssetUrn(entityId);
+        for (final Measurement measurement : measurements) {
+            final List<Object> dataList = new ArrayList<>();
+            dataList.add(dateFormatSeconds.format(new Date(measurement.getTimestamp())));
+            dataList.add(measurement.getValue());
+            data.getReadings().add(dataList);
         }
 
         return data;

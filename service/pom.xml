@@ -80,6 +80,10 @@
             <artifactId>orion-client</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
 
     </dependencies>
 
