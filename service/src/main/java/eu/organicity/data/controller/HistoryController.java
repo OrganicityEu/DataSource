@@ -54,7 +54,8 @@ public class HistoryController extends Deserializers.Base {
         data.setTo(to);
         data.setReadings(new ArrayList<>());
 
-        final List<Measurement> measurements = measurementRepository.findByAssetUrn(entityId);
+        final List<Measurement> measurements = measurementRepository.findByAssetUrnAndAttribute(entityId, attributeId);
+
         for (final Measurement measurement : measurements) {
             final List<Object> dataList = new ArrayList<>();
             dataList.add(dateFormatSeconds.format(new Date(measurement.getTimestamp())));

@@ -5,9 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-/**
- * Created by amaxilatis on 13/3/2017.
- */
 public interface MeasurementRepository extends CrudRepository<Measurement, Long> {
 
     List<Measurement> findByAssetUrn(final String assetUrn);
