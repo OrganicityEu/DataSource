@@ -27,6 +27,7 @@ public class StorageService {
 
     private static final String DATA_KEY = "data";
     private static final String ID_KEY = "id";
+    private static final String VALUE_TYPE = "type";
     private static final String VALUE_KEY = "value";
     private static final String TIMEINSTANT_KEY = "TimeInstant";
 
@@ -116,8 +117,9 @@ public class StorageService {
             return null;
         }
 
+        final String type = attributeObj.getString(VALUE_TYPE);
         final String value = attributeObj.getString(VALUE_KEY);
-        return buildMeasurement(id, attribute, value, date.getTime());
+        return buildMeasurement(id, type, value, date.getTime());
     }
 
     private Measurement buildMeasurement(final String id, final String attribute, final String value, final long l) {
