@@ -16,7 +16,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <start-class>eu.organicity.data.Application</start-class>
     </properties>
 
     <dependencies>
@@ -64,7 +63,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>eu.organicity.data.influx.Application</mainClass>
                     <executable>true</executable>
                 </configuration>
             </plugin>
