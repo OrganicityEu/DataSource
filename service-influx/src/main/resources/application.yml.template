@@ -1,0 +1,8 @@
+server.port: 8080
+spring:
+  influxdb:
+    url: http://localhost:8086
+    username: username
+    password: password
+    database: database
+    retention-policy: autogen
