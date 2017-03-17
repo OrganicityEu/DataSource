@@ -1,6 +1,5 @@
 package eu.organicity.data.controller;
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import eu.organicity.data.dto.HistoricDataDTO;
 import eu.organicity.data.model.Measurement;
 import eu.organicity.data.repository.MeasurementRepository;
@@ -19,11 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import static eu.organicity.data.controller.BaseController.APPLICATION_JSON;
-
 @RestController
 @RequestMapping(value = {"/api/v1", "/v1"})
-public class HistoryController extends Deserializers.Base {
+public class HistoryController implements HistoryControllerInterface {
 
     protected static final Logger LOGGER = Logger.getLogger(HistoryController.class);
 
@@ -35,7 +32,6 @@ public class HistoryController extends Deserializers.Base {
 
     @PostConstruct
     public void init() {
-
         final TimeZone tz = TimeZone.getTimeZone("UTC");
         dateFormatHours = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
         dateFormatHours.setTimeZone(tz);
@@ -44,9 +40,8 @@ public class HistoryController extends Deserializers.Base {
 
     }
 
-    @RequestMapping(value = {"/entities/{entity_id}/readings"}, method = RequestMethod.GET, produces = APPLICATION_JSON)
-    public HistoricDataDTO experimentView(@PathVariable("entity_id") final String entityId, @RequestParam(value = "attribute_id") final String attributeId, @RequestParam(value = "from") final String from, @RequestParam(value = "to") final String to, @RequestParam(value = "all_intervals", required = false, defaultValue = "true") final boolean allIntervals, @RequestParam(value = "rollup", required = false, defaultValue = "") final String rollup, @RequestParam(value = "function", required = false, defaultValue = "avg") final String function) {
-
+    @RequestMapping(value = {"/entities/{entity_id}/readings"}, method = RequestMethod.GET, produces = "application/json")
+    public HistoricDataDTO readings(@PathVariable("entity_id") final String entityId, @RequestParam(value = "attribute_id") final String attributeId, @RequestParam(value = "from") final String from, @RequestParam(value = "to") final String to, @RequestParam(value = "all_intervals", required = false, defaultValue = "true") final boolean allIntervals, @RequestParam(value = "rollup", required = false, defaultValue = "") final String rollup, @RequestParam(value = "function", required = false, defaultValue = "avg") final String function) {
         final HistoricDataDTO data = new HistoricDataDTO();
         data.setEntity_id(entityId);
         data.setAttribute_id(attributeId);

@@ -11,7 +11,10 @@
     <name>OrganiCity :: DataSource</name>
 
     <modules>
-        <module>service</module>
+        <module>common</module>
+        <module>service-base</module>
+        <module>service-hsql</module>
+        <module>service-influx</module>
     </modules>
 
     <dependencyManagement>
