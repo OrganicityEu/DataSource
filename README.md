@@ -35,4 +35,12 @@ The next step is to create a Subscription from their Local Orion Instance to the
 
 Currently there is no way to subscribe to data of OrganiCity through the Experimenter's Site, but to use the Datasource Service in your experiment you simply need to post the same OrganiCity assets you post to the Experimenter's Site to the Datasource Service as well, in the `ContextController` and the [`notifyContext`](https://github.com/amaxilat/DataSource/blob/master/service-hsql/src/main/java/eu/organicity/data/controller/ContextController.java#L29) API call.
 
+## Extending the Datasource Service to use your own data storage
 
+If you want or need to extend the Datasource Service to use an existing backend to retrieve historical data for your assets you need to do the following: 
+
+1. Create a new module (i.e., called `service-legacy`) by copying one of the existing ones that fits best to your case. The `service-hsql` could be the best option in most cases.
+1. Remove the `ContextController.java` file if your service needs to get no notifications about data updates as the data are stored in the database through another mechanism.
+1. Adapt the `HistoryController.java` to access and retrieve data from your own storage and transform them appropriately to the format used by OrganiCity.
+
+if you think that your version of the Datasource Service could be used by others feel free to provide us with a pull request.
