@@ -6,3 +6,15 @@ spring:
     password: password
     database: database
     retention-policy: autogen
+    
+---
+spring:
+  profiles: local
+
+log.path: "log/"
+
+---
+spring:
+  profiles: production
+
+log.path: "/var/log/organicity/"
