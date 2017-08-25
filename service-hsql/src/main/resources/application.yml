@@ -1,1 +1,13 @@
 server.port: 8080
+
+---
+spring:
+  profiles: local
+
+log.path: "log/"
+
+---
+spring:
+  profiles: production
+
+log.path: "/var/log/organicity/"
