@@ -27,6 +27,7 @@ import java.util.TimeZone;
 public class HistoryController implements HistoryControllerInterface {
 
     protected static final Logger LOGGER = Logger.getLogger(HistoryController.class);
+    private static final String INFLUXDB_QUERY = "select \"time\",\"%s\" from \"%s\" WHERE time > '%s' and time < '%s'";
 
     @Autowired
     private InfluxDBTemplate<Point> influxDBTemplate;
@@ -60,22 +61,38 @@ public class HistoryController implements HistoryControllerInterface {
         data.setReadings(new ArrayList<>());
 
         try {
-            final Date fromTime = dateFormatSeconds.parse(from);
-            final Date toTime = dateFormatSeconds.parse(to);
+            Date fromTime;
+            Date toTime;
 
-            final String queryString = String.format("select \"time\",\"%s\" from \"%s\" WHERE time > '%s' and time < '%s'", attributeId, entityId, dateFormatSecondsInflux.format(fromTime), dateFormatSecondsInflux.format(toTime));
+            try {
+                fromTime = dateFormatHours.parse(from);
+            } catch (ParseException pe) {
+                fromTime = dateFormatSeconds.parse(from);
+            }
+
+            try {
+                toTime = dateFormatHours.parse(to);
+            } catch (ParseException pe) {
+                toTime = dateFormatSeconds.parse(to);
+            }
+
+            final String queryString = String.format(INFLUXDB_QUERY, attributeId, entityId, dateFormatSecondsInflux.format(fromTime), dateFormatSecondsInflux.format(toTime));
             LOGGER.info(queryString);
             final Query q = new Query(queryString, "patras");
             final QueryResult result = influxDBTemplate.query(q);
             final List<QueryResult.Series> series = result.getResults().get(0).getSeries();
             LOGGER.info(series);
-
-            for (final QueryResult.Series ser : series) {
-                data.setReadings(ser.getValues());
-            }
-            for (final List<Object> objects : data.getReadings()) {
-                final Date date = dateFormatMillis.parse(String.valueOf(objects.get(0)));
-                objects.set(0, dateFormatSeconds.format(date));
+            if (series != null) {
+                for (final QueryResult.Series ser : series) {
+                    data.setReadings(ser.getValues());
+                }
+                for (final List<Object> objects : data.getReadings()) {
+			try{
+                    final Date date = dateFormatMillis.parse(String.valueOf(objects.get(0)));
+                    objects.set(0, dateFormatSeconds.format(date));
+			}catch(Exception e){
+			}
+                }
             }
             return data;
         } catch (ParseException e) {
